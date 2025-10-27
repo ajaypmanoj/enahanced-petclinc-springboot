@@ -6,17 +6,17 @@ pipeline {
     environment{
         IMAGE_NAME = 'springbootapp'
         IMAGE_TAG = 'latest'
-        TENANT_ID ='ec78375d-0db0-42cf-82a6-2e6403e95936'
-        ACR_NAME = 'springbootdockerreg'
-        ACR_LOGIN_SERVER = 'springbootdockerreg.azurecr.io'
+        TENANT_ID ='b3a1b74d-b2d7-4099-852b-01fa9780701a'
+        ACR_NAME = 'luckyregistryreg'
+        ACR_LOGIN_SERVER = 'luckyregistry.azurecr.io'
         FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
-        RG              = "socgen"
-        NAME            = "myAKSCluster"
+        RG              = "demo11"
+        NAME            = "lucky-aks-cluster11"
     }
     stages {
         stage('Checkout FROM GIT') {
             steps {
-                git branch: 'prod' , url: 'https://github.com/bkrrajmali/enahanced-petclinc-springboot.git'
+                git branch: 'prod' , url: 'https://github.com/ajaypmanoj/enahanced-petclinc-springboot'
         }
       }
         // stage('Validate with Maven ') {
@@ -44,11 +44,11 @@ pipeline {
         //         }
         //     }         
         // }
-         stage('Maven Package ') {
-            steps {
-                sh 'mvn package'
-            }
-        }
+        //  stage('Maven Package ') {
+        //     steps {
+        //         sh 'mvn package'
+        //     }
+        // }
         // stage('Sonar Quality Gate') {
         //     steps {
         //         timeout(time: 1, unit: 'MINUTES') {
@@ -56,64 +56,64 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Docker Build') {
-            steps {
-                script {
-                    echo "Building Docker Image......."
-                    docker.build ("${IMAGE_NAME}:${IMAGE_TAG}") 
-                }
-            }
-        }
-        stage('Azure Login TO ACR') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-                    script {
-                        echo "Azure Login Started"
-                        sh '''
-                        az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
-                        az acr login --name $ACR_NAME
-                        '''
-                    }
-                }
-            }
-        }
-        stage('Docker Push to ACR') {
-            steps {
-                script {
-                    echo "Docker Image Push to ACR"
-                    sh '''
-                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+        // stage('Docker Build') {
+        //     steps {
+        //         script {
+        //             echo "Building Docker Image......."
+        //             docker.build ("${IMAGE_NAME}:${IMAGE_TAG}") 
+        //         }
+        //     }
+        // }
+        // stage('Azure Login TO ACR') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
+        //             script {
+        //                 echo "Azure Login Started"
+        //                 sh '''
+        //                 az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
+        //                 az acr login --name $ACR_NAME
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Docker Push to ACR') {
+        //     steps {
+        //         script {
+        //             echo "Docker Image Push to ACR"
+        //             sh '''
+        //             docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
                    
-                    docker push ${FULL_IMAGE_NAME}
-                    '''
-                }
-            }
-        }
-        stage('Azure Login TO AKS') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-                    script {
-                        echo "Azure Login to AKS"
-                        sh '''
-                        az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
-                        az aks get-credentials --resource-group $RG --name $NAME --overwrite-existing
-                        '''
-                    }
-                }
-            }
-        }
-        stage('Deploy to AKS') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
-                    script {
-                        echo "Azure Login to AKS"
-                        sh '''
-                        az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
-                        kubectl apply -f k8s/sprinboot-deployment.yaml
-                        '''
-                    }
-                }
-            }
-        }
+        //             docker push ${FULL_IMAGE_NAME}
+        //             '''
+        //         }
+        //     }
+        // }
+        // stage('Azure Login TO AKS') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
+        //             script {
+        //                 echo "Azure Login to AKS"
+        //                 sh '''
+        //                 az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
+        //                 az aks get-credentials --resource-group $RG --name $NAME --overwrite-existing
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Deploy to AKS') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
+        //             script {
+        //                 echo "Azure Login to AKS"
+        //                 sh '''
+        //                 az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
+        //                 kubectl apply -f k8s/sprinboot-deployment.yaml
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
     }
 }

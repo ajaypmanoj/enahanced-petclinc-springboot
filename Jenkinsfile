@@ -19,31 +19,31 @@ pipeline {
                 git branch: 'prod' , url: 'https://github.com/ajaypmanoj/enahanced-petclinc-springboot'
         }
       }
-        // stage('Validate with Maven ') {
-        //     steps {
-        //         sh 'mvn validate'
-        //     }
-        // }
-        // stage('Compile with Maven ') {
-        //     steps {
-        //         sh 'mvn compile'
-        //     }
-        // }
-        // stage('Sonar Analysis ') {
-        //     environment {
-        //         SCANNER_HOME = tool 'Sonar-scanner'
-        //     }   
-        //     steps {
-        //         withSonarQubeEnv('sonarserver') {
-        //             sh '''${SCANNER_HOME}/bin/sonar-scanner \
-        //             -Dsonar.organization=bkrrajmali \
-        //             -Dsonar.projectName=springbootjavaapp \
-        //             -Dsonar.projectKey=springbootjavaapp \
-        //             -Dsonar.java.binaries=.
-        //           '''
-        //         }
-        //     }         
-        // }
+        stage('Validate with Maven ') {
+            steps {
+                sh 'mvn validate'
+            }
+        }
+        stage('Compile with Maven ') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('Sonar Analysis ') {
+            environment {
+                SCANNER_HOME = tool 'Sonar-scanner'
+            }   
+            steps {
+                withSonarQubeEnv('sonarserver') {
+                    sh '''${SCANNER_HOME}/bin/sonar-scanner \
+                    -Dsonar.organization=bkrrajmali \
+                    -Dsonar.projectName=springbootjavaapp \
+                    -Dsonar.projectKey=springbootjavaapp \
+                    -Dsonar.java.binaries=.
+                  '''
+                }
+            }         
+        }
         //  stage('Maven Package ') {
         //     steps {
         //         sh 'mvn package'

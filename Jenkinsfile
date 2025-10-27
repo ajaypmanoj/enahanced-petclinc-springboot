@@ -6,7 +6,7 @@ pipeline {
     environment{
         IMAGE_NAME = 'springbootapp'
         IMAGE_TAG = 'latest'
-        TENANT_ID ='b3a1b74d-b2d7-4099-852b-01fa9780701a'
+        TENANT_ID ='4bbcce16-3487-43e5-bb22-7f8c9d24d40b'
         ACR_NAME = 'luckyregistryreg'
         ACR_LOGIN_SERVER = 'luckyregistry.azurecr.io'
         FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
@@ -56,14 +56,14 @@ pipeline {
         //         }
         //     }
         // }
-        // stage('Docker Build') {
-        //     steps {
-        //         script {
-        //             echo "Building Docker Image......."
-        //             docker.build ("${IMAGE_NAME}:${IMAGE_TAG}") 
-        //         }
-        //     }
-        // }
+        stage('Docker Build') {
+            steps {
+                script {
+                    echo "Building Docker Image......."
+                    docker.build ("${IMAGE_NAME}:${IMAGE_TAG}") 
+                }
+            }
+        }
         // stage('Azure Login TO ACR') {
         //     steps {
         //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {

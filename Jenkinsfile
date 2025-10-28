@@ -8,7 +8,7 @@ pipeline {
         IMAGE_TAG = 'latest'
         TENANT_ID ='4bbcce16-3487-43e5-bb22-7f8c9d24d40b'
         ACR_NAME = 'luckyregistryreg'
-        ACR_LOGIN_SERVER = 'luckyregistry.azurecr.io'
+        ACR_LOGIN_SERVER = 'luckyregistryreg.azurecr.io'
         FULL_IMAGE_NAME = "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
         RG              = "demo11"
         NAME            = "lucky-aks-cluster11"

@@ -64,7 +64,7 @@ pipeline {
                 }
             }
         }
-        stage('Azure Login TO ACR') {
+        stage('Azure Login TO ACR and pushing') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '123', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {
                     script {
@@ -72,23 +72,26 @@ pipeline {
                         sh '''
                         az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
                         az acr login --name $ACR_NAME
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+                   
+                        docker push ${FULL_IMAGE_NAME}
                         '''
                     }
                 }
             }
         }
-        stage('Docker Push to ACR') {
-            steps {
-                script {
-                    echo "Docker Image Push to ACR"
-                    sh '''
-                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+        // stage('Docker Push to ACR') {
+        //     steps {
+        //         script {
+        //             echo "Docker Image Push to ACR"
+        //             sh '''
+        //             docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
                    
-                    docker push ${FULL_IMAGE_NAME}
-                    '''
-                }
-            }
-        }
+        //             docker push ${FULL_IMAGE_NAME}
+        //             '''
+        //         }
+        //     }
+        // }
         // stage('Azure Login TO AKS') {
         //     steps {
         //         withCredentials([usernamePassword(credentialsId: 'azure-acr-spn', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')]) {

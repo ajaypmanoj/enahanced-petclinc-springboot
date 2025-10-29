@@ -77,20 +77,32 @@ pipeline {
                 }
             }
         }
-        stage('Login to ACR and Push Image') {
+        // stage('Login to ACR and Push Image') {
+        //     steps {
+        //         withCredentials([
+        //             usernamePassword(credentialsId: 'azure-sp', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')
+        //         ]) {
+        //             script {
+        //                 echo "Logging into Azure Container Registry..."
+        //                 sh '''
+        //                     az login --service-principal -u "$AZURE_USERNAME" -p "$AZURE_PASSWORD" --tenant "$TENANT_ID"
+        //                     az acr login --name $ACR_NAME
+        //                     docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+        //                     docker push ${FULL_IMAGE_NAME}
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Docker Push to ACR') {
             steps {
-                withCredentials([
-                    usernamePassword(credentialsId: 'azure-sp', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD')
-                ]) {
-                    script {
-                        echo "Logging into Azure Container Registry..."
-                        sh '''
-                            az login --service-principal -u "$AZURE_USERNAME" -p "$AZURE_PASSWORD" --tenant "$TENANT_ID"
-                            az acr login --name $ACR_NAME
-                            docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
-                            docker push ${FULL_IMAGE_NAME}
-                        '''
-                    }
+                script {
+                    echo "Docker Image Push to ACR"
+                    sh '''
+                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+                   
+                    docker push ${FULL_IMAGE_NAME}
+                    '''
                 }
             }
         }

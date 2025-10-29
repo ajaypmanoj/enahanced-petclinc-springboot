@@ -80,8 +80,8 @@ pipeline {
         stage('Login to ACR and Push Image') {
             steps {
                 withCredentials([
-                    usernamePassword(credentialsId: '123', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD'),
-                    string(credentialsId: '123', variable: 'TENANT_ID')
+                    usernamePassword(credentialsId: 'azure-sp', usernameVariable: 'AZURE_USERNAME', passwordVariable: 'AZURE_PASSWORD'),
+                    string(credentialsId: 'azure-sp', variable: 'TENANT_ID')
                 ]) {
                     script {
                         echo "Logging into Azure Container Registry..."
